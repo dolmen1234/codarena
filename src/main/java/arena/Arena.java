@@ -204,6 +204,7 @@ public class Arena implements Callable<List<Bot>> {
 //                    referee.setPlayerTimeout(0, turn, i);
 //                    continue;
 //                }
+                
                 if (outputs.length != referee.getExpectedOutputLineCountForPlayer(i)) {
                     System.err.println("wrong ouput count "+outputs.length);
                     die(i, turn);
