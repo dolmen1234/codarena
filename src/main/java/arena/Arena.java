@@ -16,6 +16,8 @@ import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.Callable;
 
+import arena.Bot;
+
 public class Arena implements Callable<List<Bot>> {
 
     private static final String GAME_NAME = "GhostInTheCell";
@@ -190,10 +192,9 @@ public class Arena implements Callable<List<Bot>> {
             }
             String [] outputs = new String[referee.getExpectedOutputLineCountForPlayer(i)];
             try {
-                bot.cleanErrorStream();
                 String output = "";
-                long timeout = referee.getMillisTimeForRound(turn);
-                long start = System.currentTimeMillis();
+//                long timeout = referee.getMillisTimeForRound(turn);
+//                long start = System.currentTimeMillis();
 //                Thread.sleep(timeout*2);
                 output = bot.receiveOutput();
                 /** cannot manage timeout when multi threading, too much perturbation */

@@ -1,11 +1,9 @@
 package arena;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.lang.ProcessBuilder.Redirect;
 import java.util.Scanner;
 
 public class Bot {
@@ -19,7 +17,6 @@ public class Bot {
     private Process process;
     private PrintStream out;
     private Scanner in;
-    private InputStream err;
     
     
     public Bot(String commandLine) {
@@ -36,15 +33,11 @@ public class Bot {
             builder = new ProcessBuilder("java", "Player");
             builder.directory(new File(commandLine));
         }
-        
-//        File tmpInput = File.createTempFile("bot_", ".out");
-//        tmpInput.deleteOnExit();
-//        builder.redirectErrorStream(true).redirectInput(tmpInput);
-        
+        builder.redirectError(Redirect.INHERIT);
+
         process = builder.start();
         out = new PrintStream(process.getOutputStream());
         in = new Scanner(process.getInputStream());
-        err = process.getErrorStream();    
         sendInput(initInputForPlayer);
     }
 
@@ -66,7 +59,6 @@ public class Bot {
     }
 
     public void sendInput(String[] inputForPlayer) throws IOException {
-        cleanErrorStream();
         for (String line : inputForPlayer) {
             out.println(line);
         }
@@ -96,10 +88,8 @@ public class Bot {
     }
     
     public void close() throws IOException {
-        cleanErrorStream();
         in.close();
         out.close();
-        err.close();
         if (process != null) {
             process.destroy();
         }
@@ -120,16 +110,6 @@ public class Bot {
     public void setFinalRank(int finalRank) {
         this.finalRank = finalRank;
     }
-    
-    public void cleanErrorStream() throws IOException {
-        if (err != null && err.available() > 0) {
-            BufferedReader reader = new BufferedReader(new InputStreamReader(err));
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.err.println(line);
-            }
-        }
-     }
 
     public String getCommandLine() {
         return commandLine;
